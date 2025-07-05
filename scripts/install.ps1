@@ -10,8 +10,7 @@ git clone https://github.com/jordantshaw/proxmox2discord.git $AppDir
 Set-Location $AppDir
 
 Write-Host "🐍 Installing Python dependencies…" -ForegroundColor Cyan
-python -m pip install --upgrade pip --user
-python -m pip install -r requirements.txt --user
+python -m pip install -r requirements.txt
 
 Write-Host "`n✅ Installation complete!" -ForegroundColor Green
 Write-Host "To start the server:" -ForegroundColor Yellow

@@ -11,8 +11,7 @@ git clone "${REPO_URL}" "${APP_DIR}"
 cd "${APP_DIR}"
 
 echo "🐍 Installing Python dependencies…"
-pip3 install --user --upgrade pip
-pip3 install --user -r requirements.txt
+pip3 install -r requirements.txt
 
 cat <<EOF
 
