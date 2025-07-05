@@ -1,0 +1,20 @@
+[project]
+name = "proxmox2discord"
+version = "0.1.0"
+description = "Proxmox Discord notifier service"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]",
+    "httpx>=0.28.1",
+    "pydantic>=2.10.6",
+    "pydantic-settings>=2.8.1",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+proxmox2discord = "proxmox2discord.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

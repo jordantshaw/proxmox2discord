@@ -1,0 +1,7 @@
+.venv
+.venv/*
+docs/
+dockercleanup.sh
+Dockerfile
+
+
