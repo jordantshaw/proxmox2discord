@@ -26,10 +26,39 @@ Whether you run nightly backups or ad‑hoc snapshots, Proxmox2Discord ensures y
 ## Installation
 
 ### Docker (Recommended)
-Build and run with Docker:
-
+Clone repository and build Docker image.
 ```bash
+git clone https://github.com/jordantshaw/proxmox2discord.git
+cd proxmox2discord
 docker build -t proxmox2discord:latest .
+```
+
+### One‑Line Manual Install
+This will install the application into your users HOME directory.
+
+**Linux/macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jordantshaw/proxmox2discord/main/scripts/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (iwr https://raw.githubusercontent.com/jordantshaw/proxmox2discord/main/scripts/install.ps1 -UseBasicParsing)"
+```
+
+### Manual Install
+```bash
+git clone https://github.com/jordantshaw/proxmox2discord.git
+cd proxmox2discord
+pip install -r requirements.txt
+```
+
+
+## Quickstart
+
+### Using Docker
+Run with Docker.
+```bash
 docker run -d \
   -p 6068:6068 \
   -e TZ="UTC" \
@@ -55,73 +84,31 @@ services:
 docker compose up -d
 ```
 
-### One‑Line Install
-**Unix/macOS:**
+### Run Manually
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jordantshaw/proxmox2discord/main/scripts/install.sh | bash
+proxmox2discord
 ```
 
-**Windows (PowerShell):**
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (iwr https://raw.githubusercontent.com/jordantshaw/proxmox2discord/main/scripts/install.ps1 -UseBasicParsing)"
-```
-
-
-## Quickstart
-1. **Start the server**
-   ```bash
-   proxmox2discord
-   ```
-
-2. **Verify**
-   Open [http://<YOUR_HOST>:6068/docs](http://<YOUR_HOST>:6068/docs) for the interactive API docs.
-
-3. **Configure Proxmox** (see below)
+### Verify
+Open [http://<YOUR_HOST>:6068/docs](http://<YOUR_HOST>:6068/docs) for the interactive API docs.
 
 
 ## Proxmox Integration
-Use Proxmox’s `--notification-script` to POST JSON to `/notify`:
+Point your Proxmox cluster at the `/notify` endpoint so every alert is mirrored to Discord and archived.
 
-```bash
-vzdump 105 \
-  --storage backup --mode snapshot --compress zstd \
-  --notification-script '
-    curl -fsSL -X POST http://<YOUR_HOST>:6068/notify \
-      -H "Content-Type: application/json" \
-      -d "{\
-        \"discord_webhook\":\"https://discord.com/api/webhooks/XXX/YYY\",\
-        \"title\":\"Backup %VMID% (%GUESTNAME%)\",\
-        \"severity\":\"%STATUS%\",\
-        \"message\":\"Time: %TIME%\\nSize: %SIZE%\\nFilename: %FILENAME%\"\
-      }"
-'
-```
+| UI Field            | Value / Example                                                                                                                                                                                                                     |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Endpoint Name**   | `proxmox2discord     `                                                                                                                                                                                                              |
+| **Method**          | `POST`                                                                                                                                                                                                                              |
+| **URL**             | `http://<API_SERVER_IP>:6068/notify`                                                                                                                                                                                                |
+| **Headers**         | `Content-Type: application/json`                                                                                                                                                                                                    |
+| **Body**            | <pre lang=json>{<br/>  "discord_webhook": "https://discord.com/api/webhooks/{{ secrets.id }}/{{ secrets.token }}",<br/>  "title" : "{{ title }}",<br/>  "message": "{{ escape message }}",<br/>  "severity": "{{ severity }}"<br/>} |
+| **Secrets**         | `id` → your Discord webhook **ID**<br>`token` → your Discord webhook **token**                                                                                                                                                      |
+| **Enable**          | ✓                                                                                                                                                                                                                                   |
 
-Or globally in `/etc/vzdump.conf`:
-```ini
-[global]
-notification-mode: notification-script
-template: \
-  curl -fsSL -X POST http://<YOUR_HOST>:6068/notify \
-    -H 'Content-Type: application/json' \
-    -d '{{ json.encode({ \
-      "discord_webhook": "https://discord.com/api/webhooks/XXX/YYY", \
-      "title": "Backup %VMID% (%GUESTNAME%)", \
-      "severity": "%STATUS%", \
-      "message": "Time: %TIME%\nSize: %SIZE%\nFilename: %FILENAME%" \
-    }) }}'
-```
+> The double-curly placeholders (`{{ … }}`) are substituted by Proxmox at run time, so each alert carries its own title, severity, and HTML-escaped message.
 
-
-## Configuration
-Environment variables and their defaults:
-
-| Env Variable    | Default                     | Description                   |
-|-----------------|-----------------------------| ----------------------------- |
-| `LOG_DIRECTORY` | `/opt/proxmox2discord/logs` | Path to store raw logs  |
-
-You can override these at runtime or via a `.env` file (if using `python-dotenv`).
-
+![Proxmox webhook configuration screenshot](docs/images/proxmox_webhook_config.png)
 
 
 ## License

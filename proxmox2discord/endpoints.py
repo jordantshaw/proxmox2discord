@@ -24,7 +24,7 @@ async def notify(
     request: Request,
 ) -> dict[str, Any]:
     """
-    Receive a notification payload, save it to a log file, and forward it to a Discord webhook.
+    Forward a Proxmox alert to Discord and archive the full Proxmox message.
     """
 
     log_id = uuid.uuid4().hex
@@ -53,7 +53,10 @@ async def notify(
     name="get_log",
 )
 async def get_log(log_id: str) -> str:
-    """ Retrieve the raw contents of a previously saved log. """
+    """
+    Fetch the full text of a stored Proxmox alert message.
+
+    """
     log_path = settings.log_directory / f"{log_id}.log"
     if not log_path.exists():
         raise HTTPException(status_code=404, detail="Log not found")
