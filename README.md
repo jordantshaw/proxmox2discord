@@ -16,6 +16,7 @@ Whether you run nightly backups or ad‑hoc snapshots, Proxmox2Discord ensures y
 
 - Raw Log Storage: Saves complete Proxmox logs in a configurable directory.
 - Discord Embeds: Sends rich notifications with title, severity, and log link.
+- Optional User Mentions: Include a Discord user ID to automatically @mention a specific user in the alert.
 - Configurable Retention: Auto-cleanup of old logs after _N_ days. _Coming Soon!_
 - Lightweight: Single Python package; minimal dependencies.
 - Docker‑Ready: Official Dockerfile for fast deployment.
@@ -96,17 +97,18 @@ Open [http://<YOUR_HOST>:6068/docs](http://<YOUR_HOST>:6068/docs) for the intera
 ## Proxmox Integration
 Point your Proxmox cluster at the `/notify` endpoint so every alert is mirrored to Discord and archived.
 
-| UI Field            | Value / Example                                                                                                                                                                                                                 |
-|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Endpoint Name**   | `proxmox2discord `                                                                                                                                                                                                              |
-| **Method**          | `POST`                                                                                                                                                                                                                          |
-| **URL**             | `http://<API_SERVER_IP>:6068/notify`                                                                                                                                                                                            |
-| **Headers**         | `Content-Type: application/json`                                                                                                                                                                                                |
-| **Body**            | <pre lang=json>{<br/>  "discord_webhook": "https://discord.com/api/webhooks/{{ secrets.id }}/{{ secrets.token }}",<br/>  "title" : "{{ title }}",<br/>  "message": "{{ escape message }}",<br/>  "severity": "{{ severity }}"<br/>} |
-| **Secrets**         | `id` → your Discord webhook **ID**<br>`token` → your Discord webhook **token**                                                                                                                                                  |
-| **Enable**          | ✓                                                                                                                                                                                                                               |
+| UI Field            | Value / Example                                                                                                                                                                                                                                                                     |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Endpoint Name**   | `proxmox2discord `                                                                                                                                                                                                                                                                  |
+| **Method**          | `POST`                                                                                                                                                                                                                                                                              |
+| **URL**             | `http://<API_SERVER_IP>:6068/notify`                                                                                                                                                                                                                                                |
+| **Headers**         | `Content-Type: application/json`                                                                                                                                                                                                                                                    |
+| **Body**            | <pre lang=json>{<br/>  "discord_webhook": "https://discord.com/api/webhooks/{{ secrets.id }}/{{ secrets.token }}",<br/>  "title" : "{{ title }}",<br/>  "message": "{{ escape message }}",<br/>  "severity": "{{ severity }}"<br/>  "mention_user_id":"{{ secrets.user_id }}"<br/>} |
+| **Secrets**         | `id` → your Discord webhook **ID**<br>`token` → your Discord webhook **token** <br>`user_id` → your Discord user ID **token**                                                                                                                                                       |
+| **Enable**          | ✓                                                                                                                                                                                                                                                                                   |
 
-> The double-curly placeholders (`{{ … }}`) are substituted by Proxmox at run time, so each alert carries its own title, severity, and HTML-escaped message.
+> Optional Mentions:  Add discord_user_id (the numeric user ID) to the payload to @mention a specific user in Discord.
+
 
 ## License
 Released under the [MIT License](LICENSE).
