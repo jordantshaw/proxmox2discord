@@ -96,20 +96,17 @@ Open [http://<YOUR_HOST>:6068/docs](http://<YOUR_HOST>:6068/docs) for the intera
 ## Proxmox Integration
 Point your Proxmox cluster at the `/notify` endpoint so every alert is mirrored to Discord and archived.
 
-| UI Field            | Value / Example                                                                                                                                                                                                                     |
-|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Endpoint Name**   | `proxmox2discord     `                                                                                                                                                                                                              |
-| **Method**          | `POST`                                                                                                                                                                                                                              |
-| **URL**             | `http://<API_SERVER_IP>:6068/notify`                                                                                                                                                                                                |
-| **Headers**         | `Content-Type: application/json`                                                                                                                                                                                                    |
+| UI Field            | Value / Example                                                                                                                                                                                                                 |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Endpoint Name**   | `proxmox2discord `                                                                                                                                                                                                              |
+| **Method**          | `POST`                                                                                                                                                                                                                          |
+| **URL**             | `http://<API_SERVER_IP>:6068/notify`                                                                                                                                                                                            |
+| **Headers**         | `Content-Type: application/json`                                                                                                                                                                                                |
 | **Body**            | <pre lang=json>{<br/>  "discord_webhook": "https://discord.com/api/webhooks/{{ secrets.id }}/{{ secrets.token }}",<br/>  "title" : "{{ title }}",<br/>  "message": "{{ escape message }}",<br/>  "severity": "{{ severity }}"<br/>} |
-| **Secrets**         | `id` → your Discord webhook **ID**<br>`token` → your Discord webhook **token**                                                                                                                                                      |
-| **Enable**          | ✓                                                                                                                                                                                                                                   |
+| **Secrets**         | `id` → your Discord webhook **ID**<br>`token` → your Discord webhook **token**                                                                                                                                                  |
+| **Enable**          | ✓                                                                                                                                                                                                                               |
 
 > The double-curly placeholders (`{{ … }}`) are substituted by Proxmox at run time, so each alert carries its own title, severity, and HTML-escaped message.
-
-![Proxmox webhook configuration screenshot](docs/images/proxmox_webhook_config.png)
-
 
 ## License
 Released under the [MIT License](LICENSE).
