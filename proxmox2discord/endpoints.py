@@ -10,7 +10,7 @@ from .schemas.notify import Notify
 from .schemas.responses import NotifyResponse
 
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 
 @router.post(
